@@ -9,6 +9,11 @@ import (
 )
 
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("No executables in the args. Nothing to run!")
+		return
+	}
+
 	environ := os.Environ()
 
 	for _, pair := range environ {
@@ -49,9 +54,7 @@ func main() {
 						for ; startInt <= stopInt; startInt += stepInt {
 							vals = append(vals, strconv.Itoa(startInt))
 						}
-					}
-
-					if startFloat, stopFloat, stepFloat, ok := areFloats(start, stop, step); ok {
+					} else if startFloat, stopFloat, stepFloat, ok := areFloats(start, stop, step); ok {
 						for ; startFloat <= stopFloat; startFloat += stepFloat {
 							vals = append(vals, fmt.Sprintf("%f", startFloat))
 						}
@@ -77,10 +80,15 @@ var keys = []string{}
 var combos = []string{}
 var params = make(map[string][]string)
 
-func serialize(combo map[string]string) []string {
-	results := []string{}
+func serializeEnviron(combo map[string]string) []string {
+	results := os.Environ()
+
 	for k,v := range combo {
-		results = append(results, k + "=" + v)
+		for i, r := range results {
+			if strings.HasPrefix(r, k+"=") {
+				results[i] = k + "=" + v
+			}
+		}
 	}
 	return results
 }
@@ -89,10 +97,12 @@ func next_param(param_index int, current_combo map[string]string) {
 	if param_index == len(params) {
 		// exec
 		cmd := exec.Command(os.Args[1], os.Args[2:]...)
-		cmd.Env = serialize(current_combo)
+
+		cmd.Env = serializeEnviron(current_combo)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		cmd.Start()
+		cmd.Wait()
 
 		//fmt.Println(, current_combo)
 		return
