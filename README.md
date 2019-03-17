@@ -17,7 +17,7 @@ STR_PARAM1=val1 NUM_PARAM2=45 RANGE_PARAM3=1 test.py
 
 Test:
 ```
-ENUM=[wo,jhi,yay] RANGE=(START=1,STOP=10,STEP=2) ./comboss.py 'python3 test.py
+ENUM=[wo,jhi,yay] RANGE=(START=1,STOP=10,STEP=2) ./comboss.py 'python3 test.py > output.csv
 ```
 
 ## go ##
@@ -30,5 +30,5 @@ go install github.com/olesho/comboss
 
 Test
 ```
-ENUM=[aba,abr,abrvalg] RANGE=(1,5,.2) comboss python3 test.py
+ENUM=[aba,abr,abrvalg] RANGE=(1,5,.2) comboss python3 test.py > output.csv
 ```
